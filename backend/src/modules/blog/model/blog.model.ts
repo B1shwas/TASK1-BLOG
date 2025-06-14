@@ -20,6 +20,12 @@ export class Blog extends Document {
 
   @Prop({ type: Boolean, default: false })
   isDeleted: boolean;
+
+  @Prop({
+    type: String,
+    unique: true,
+  })
+  slug: string;
 }
 
 export const BlogSchema = SchemaFactory.createForClass(Blog);

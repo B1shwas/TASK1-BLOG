@@ -40,6 +40,16 @@ export class BlogService {
     return updatedBlog;
   }
 
+  async findBySlug(slug: string): Promise<Blog> {
+    const blog = await this.blogModel
+      .findOne({ slug, isDeleted: false })
+      .exec();
+    if (!blog) {
+      throw new NotFoundException(`Blog with slug ${slug} not found`);
+    }
+    return blog;
+  }
+
   async delete(id: string): Promise<void> {
     const deleted = await this.blogModel
       .findOneAndUpdate(

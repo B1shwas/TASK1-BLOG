@@ -1,7 +1,8 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
 import { CreateUserDto } from './dto/user.dto';
 import { UserService } from './user.service';
 import { AuthGuard } from '../auth/guards/auth.guard';
+import { Request } from 'express';
 
 @Controller('user')
 export class UserController {
@@ -13,8 +14,8 @@ export class UserController {
   }
 
   @UseGuards(AuthGuard)
-  @Get()
-  async getUser() {
-    return 'hello';
+  @Get('me')
+  async getUser(@Req() req: Request) {
+    return this.userService.findUserById(req.user._id);
   }
 }

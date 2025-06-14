@@ -56,6 +56,12 @@ export class BlogController {
     return this.blogService.update(id, updateBlogDto);
   }
 
+  @Get('/slug/:slug')
+  async findBySlug(@Param('slug') slug: string) {
+    const blog = await this.blogService.findBySlug(slug);
+    return blog;
+  }
+
   @UseGuards(AuthGuard)
   @Delete('/delete/:id')
   async remove(@Param('id') id: string) {

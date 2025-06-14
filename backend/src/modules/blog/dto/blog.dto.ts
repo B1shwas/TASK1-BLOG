@@ -11,6 +11,9 @@ export class CreateBlogDto {
 
   @IsString()
   content: string;
+
+  @IsString()
+  slug: string;
 }
 
 export class UpdateBlogDto extends PartialType(CreateBlogDto) {}
