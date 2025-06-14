@@ -5,11 +5,13 @@ import { Blog } from "@/types/blog.types";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import useAuthStore from "@/store/useAuthStore";
+import CreateBlog from "@/components/CreateBlog";
 
 export default function Home() {
   const [blogs, setBlogs] = useState<Blog[]>([]);
   const { isLoggedIn, isAdmin } = useAuthStore();
   const [isLog, setIsLog] = useState<boolean>();
+  const [isOpen, setIsOpen] = useState<boolean>(false);
   useEffect(() => {
     fetchBlogs();
     const checkLogin = async () => {
@@ -32,6 +34,16 @@ export default function Home() {
           Login to add blogs (for admin only)
         </Link>
       )}
+      {isAdmin && (
+        <button
+          className="bg-white p-4 text-black cursonr-point"
+          onClick={() => {
+            setIsOpen(true);
+          }}
+        >
+          Add blog
+        </button>
+      )}
       <div className=" flex items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
         {blogs.map((blog, index) => (
           <BlogCard
@@ -45,8 +57,10 @@ export default function Home() {
               createdAt: blog.createdAt,
               description: blog.description,
             }}
+            fetch={fetchBlogs}
           />
         ))}
+        {isOpen && <CreateBlog setIsOpen={setIsOpen} fetch={fetchBlogs} />}
       </div>
     </div>
   );

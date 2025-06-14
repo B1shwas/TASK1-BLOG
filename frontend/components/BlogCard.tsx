@@ -1,14 +1,33 @@
+"use client";
 import Link from "next/link";
 import { Calendar, User } from "lucide-react";
 import { Blog } from "@/types/blog.types";
 import useAuthStore from "@/store/useAuthStore";
+import { useState } from "react";
+import CreateBlog from "./CreateBlog";
+import { blogApi } from "@/lib/blog.api";
 
 interface BlogCardProps {
   blog: Omit<Blog, "isDeleted" | "updatedAt">;
+  fetch: () => void;
 }
 
-export default function BlogCard({ blog }: BlogCardProps) {
+export default function BlogCard({ blog, fetch }: BlogCardProps) {
   const { isAdmin } = useAuthStore();
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+
+  const handleDelete = async (id: string) => {
+    if (!confirm("Do you want to delete this blog?")) {
+      return;
+    }
+
+    try {
+      await blogApi.deleteBlog(id);
+      fetch();
+    } catch (err) {
+      console.error("Failed to delete blog", err);
+    }
+  };
   return (
     <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
       <div className="p-6">
@@ -41,6 +60,29 @@ export default function BlogCard({ blog }: BlogCardProps) {
             Read more →
           </Link>
         </div>
+        {isAdmin && (
+          <div className="m-2 space-y-2">
+            <button
+              className="bg-red-700 block"
+              onClick={() => {
+                handleDelete(blog._id);
+              }}
+            >
+              Delete
+            </button>
+            <button
+              className="bg-blue-700"
+              onClick={() => {
+                setIsOpen(true);
+              }}
+            >
+              Edit
+            </button>
+          </div>
+        )}
+        {isOpen && (
+          <CreateBlog setIsOpen={setIsOpen} fetch={fetch} blog={blog} />
+        )}
       </div>
     </div>
   );
