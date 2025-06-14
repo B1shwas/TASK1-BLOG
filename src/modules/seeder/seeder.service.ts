@@ -3,7 +3,6 @@ import { InjectModel } from '@nestjs/mongoose';
 import { User } from '../user/model/user.model';
 import { Model } from 'mongoose';
 import { USER_ROLE } from '../user/enum/role.enum';
-import * as bcrypt from 'bcryptjs';
 
 @Injectable()
 export class SeederService {
@@ -19,11 +18,9 @@ export class SeederService {
       return;
     }
 
-    const hashedPassword = await bcrypt.hash('admin123', 10);
-
     const admin = await this.userModel.create({
       username: 'admin',
-      password: hashedPassword,
+      password: 'admin123',
       role: USER_ROLE.ADMIN,
     });
   }
