@@ -19,4 +19,12 @@ export class UserService {
     await newUser.save();
     return newUser;
   }
+
+  async findUserById(id: string) {
+    const user = await this.userModel.findById(id).exec();
+    if (!user) {
+      throw new BadRequestException('User not found');
+    }
+    return user;
+  }
 }
